@@ -18,10 +18,10 @@ set_target_properties(
 )
 qt5_use_modules(WakeItBackend Gui Qml Quick)
 
-# Copy the QML files to the build dir for running in QtCreator
+# Copy the qmldir file to the build dir so that QML code can find the plugin
 add_custom_target(
     WakeItBackend-qmldir ALL
-    COMMAND cp "${CMAKE_CURRENT_SOURCE_DIR}/qmldir" "${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}"
+    COMMAND cp "${CMAKE_CURRENT_SOURCE_DIR}/qmldir" "${CMAKE_CURRENT_BINARY_DIR}/${MODULE_NAME}"
     DEPENDS ${QMLFILES}
 )
 
