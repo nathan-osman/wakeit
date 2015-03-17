@@ -1,15 +1,15 @@
 {
-    "architecture": "@CLICK_ARCH@",
-    "description": "Send Wake-on-LAN magic packets",
+    "architecture": "@HOST_ARCH@",
+    "description": "@APP_DESCRIPTION@",
     "framework": "ubuntu-sdk-14.04-qml",
     "hooks": {
         "wakeit": {
             "apparmor": "wakeit.apparmor",
-            "desktop": "wakeit.desktop"
+            "desktop": "@APP_DESKTOP@"
         }
     },
     "maintainer": "Nathan Osman <nathan@quickmediasolutions.com>",
     "name": "wakeit.nathan-osman",
-    "title": "Wake It!",
-    "version": "0.1.1"
+    "title": "@APP_TITLE@",
+    "version": "@APP_VERSION@"
 }

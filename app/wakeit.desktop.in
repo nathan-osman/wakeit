@@ -1,8 +1,8 @@
 [Desktop Entry]
-_Name=Wake It!
-Comment=Send Wake-on-LAN magic packets
-Exec=@EXEC@
-Icon=@ICON@
+_Name=@APP_NAME@
+Comment=@APP_DESCRIPTION@
+Exec=@APP_EXEC@
+Icon=@APP_ICON@
 Terminal=false
 Type=Application
 X-Ubuntu-Touch=true
