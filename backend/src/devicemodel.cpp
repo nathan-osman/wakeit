@@ -73,14 +73,16 @@ QVariant DeviceModel::data(const QModelIndex &index, int role) const
 
 QHash<int, QByteArray> DeviceModel::roleNames() const
 {
-    return {
-        { Title, "title" },
-        { Local, "local" },
-        { Host, "host" },
-        { MAC, "mac" },
-        { Port, "port" },
-        { Busy, "busy" }
-    };
+    QHash<int, QByteArray> roles;
+
+    roles.insert(Title, "title");
+    roles.insert(Local, "local");
+    roles.insert(Host, "host");
+    roles.insert(MAC, "mac");
+    roles.insert(Port, "port");
+    roles.insert(Busy, "busy");
+
+    return roles;
 }
 
 bool DeviceModel::load()
@@ -167,7 +169,7 @@ void DeviceModel::wake(int i)
     // Wake the specified device
     mDevices.at(i)->wake();
 
-    emit dataChanged(index(i), index(i), {Busy});
+    emit dataChanged(index(i), index(i), QVector<int>() << Busy);
 }
 
 void DeviceModel::onFinished()
@@ -176,5 +178,5 @@ void DeviceModel::onFinished()
     Device *device = qobject_cast<Device*>(sender());
     int i = mDevices.indexOf(device);
 
-    emit dataChanged(index(i), index(i), {Busy});
+    emit dataChanged(index(i), index(i), QVector<int>() << Busy);
 }

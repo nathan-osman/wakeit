@@ -62,7 +62,7 @@ public:
      * @brief Create a new device model
      * @param parent parent QObject
      */
-    explicit DeviceModel(QObject *parent = nullptr);
+    explicit DeviceModel(QObject *parent = 0);
 
     /**
      * @brief Destroy the device model
