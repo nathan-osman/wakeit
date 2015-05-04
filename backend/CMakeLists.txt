@@ -8,6 +8,7 @@ set(
     SRC
     src/backend.cpp
     src/device.cpp
+    src/devicemodel.cpp
 )
 
 # Create the plugin and set its properties

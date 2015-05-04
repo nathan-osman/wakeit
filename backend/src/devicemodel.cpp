@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
- **/
+ */
 
 #include <QFile>
 #include <QJsonArray>
@@ -40,7 +40,7 @@ DeviceModel::~DeviceModel()
     qDeleteAll(mDevices);
 }
 
-int DeviceModel::rowCount(const QModelIndex &parent) const
+int DeviceModel::rowCount(const QModelIndex &) const
 {
     return mDevices.count();
 }
@@ -55,17 +55,17 @@ QVariant DeviceModel::data(const QModelIndex &index, int role) const
 
     switch(role) {
     case Title:
-        return device->title;
-    case Type:
-        return device->type;
+        return device->title();
+    case Local:
+        return device->local();
     case Host:
-        return device->host;
+        return device->host();
     case MAC:
-        return device->mac;
+        return device->mac();
     case Port:
-        return device->port;
+        return device->port();
     case Busy:
-        return true;
+        return device->isBusy();
     default:
         return QVariant();
     }
@@ -75,7 +75,7 @@ QHash<int, QByteArray> DeviceModel::roleNames() const
 {
     return {
         { Title, "title" },
-        { Type, "type" },
+        { Local, "local" },
         { Host, "host" },
         { MAC, "mac" },
         { Port, "port" },
@@ -110,13 +110,11 @@ bool DeviceModel::load()
     qDeleteAll(mDevices);
 
     // Add the new items to the model
-    beginResetModel();
-    foreach(QJsonValue device, devices.toArray()) {
-        if(device.isObject()) {
-            mDevices.append(new Device(device.toObject()));
+    foreach(QJsonValue value, devices.toArray()) {
+        if(value.isObject()) {
+            add(value.toObject());
         }
     }
-    endResetModel();
 
     return true;
 }
@@ -126,25 +124,31 @@ bool DeviceModel::save()
     QFile dataFile("data.json");
 
     // Attempt to open the file
-    if(!dataFile.open(QIODevice::ReadWrite)) {
+    if(!dataFile.open(QIODevice::WriteOnly)) {
         return false;
     }
 
+    // Build an array of devices
     QJsonArray devices;
-
     foreach(Device *device, mDevices) {
         devices.append(device->toJson());
     }
+
+    // Create the root object
+    QJsonObject root;
+    root.insert("devices", devices);
+
+    // Write the JSON document to disk
+    dataFile.write(QJsonDocument(root).toJson());
 }
 
-void DeviceModel::add(const QString &title, AddressType type, const QString &host, const QString &mac, quint16 port)
+void DeviceModel::add(const QJsonObject &data)
 {
     Device *device = new Device;
-    device->title = title;
-    device->type = type;
-    device->host = host;
-    device->mac = mac;
-    device->port = port;
+    device->fromJson(data);
+
+    connect(device, SIGNAL(finished()), this, SLOT(onFinished()));
+    connect(device, SIGNAL(error(QString)), this, SIGNAL(error(QString)));
 
     beginInsertRows(QModelIndex(), mDevices.count(), mDevices.count());
     mDevices.append(device);
@@ -158,7 +162,19 @@ void DeviceModel::remove(int index)
     endRemoveRows();
 }
 
-void DeviceModel::wake(int index)
+void DeviceModel::wake(int i)
 {
-    //...
+    // Wake the specified device
+    mDevices.at(i)->wake();
+
+    emit dataChanged(index(i), index(i), {Busy});
+}
+
+void DeviceModel::onFinished()
+{
+    // Determine the index of the sender
+    Device *device = qobject_cast<Device*>(sender());
+    int i = mDevices.indexOf(device);
+
+    emit dataChanged(index(i), index(i), {Busy});
 }

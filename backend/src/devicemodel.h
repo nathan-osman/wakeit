@@ -20,13 +20,16 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
- **/
+ */
 
 #ifndef DEVICEMODEL_H
 #define DEVICEMODEL_H
 
 #include <QAbstractListModel>
+#include <QJsonObject>
 #include <QList>
+
+#include "device.h"
 
 /**
  * @brief Models a list of devices
@@ -34,7 +37,6 @@
 class DeviceModel : public QAbstractListModel
 {
     Q_OBJECT
-    Q_ENUMS(AddressType)
 
 public:
 
@@ -44,8 +46,8 @@ public:
     enum Role {
         /// Title displayed for the device
         Title = Qt::UserRole,
-        /// Type of address used for host
-        Type,
+        /// True if packets should be broadcast locally
+        Local,
         /// Hostname or IP address
         Host,
         /// MAC address of the device
@@ -54,16 +56,6 @@ public:
         Port,
         /// Whether the device is currently busy
         Busy
-    };
-
-    /**
-     * @brief Address used for sending packets to
-     */
-    enum AddressType {
-        /// Send packets to the broadcast address
-        LAN = 0,
-        /// Send packets to an IP address
-        WAN
     };
 
     /**
@@ -106,13 +98,9 @@ public:
 
     /**
      * @brief Add a new device to the model
-     * @param title descriptive name for the device
-     * @param type type of address
-     * @param host device host
-     * @param mac device MAC address
-     * @param port port for magic packet
+     * @param data JSON data to use for the new device
      */
-    Q_INVOKABLE void add(const QString &title, AddressType type, const QString &host, const QString &mac, quint16 port);
+    Q_INVOKABLE void add(const QJsonObject &data);
 
     /**
      * @brief Remove a device from the model
@@ -126,22 +114,15 @@ public:
      */
     Q_INVOKABLE void wake(int index);
 
+signals:
+
+    void error(const QString &message);
+
+private slots:
+
+    void onFinished();
+
 private:
-
-    // Data for an individual item
-    class Device
-    {
-    public:
-
-        //Device();
-        //~Device();
-
-        QString title;
-        AddressType type;
-        QString host;
-        QString mac;
-        quint16 port;
-    };
 
     QList<Device*> mDevices;
 };

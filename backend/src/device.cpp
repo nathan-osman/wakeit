@@ -20,7 +20,9 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
- **/
+ */
+
+#include <QNetworkInterface>
 
 #include "device.h"
 
@@ -49,16 +51,25 @@ void Device::wake()
     }
 
     // Reset the number of packets remaining to be sent
-    // and set the address that will be used for the packets
     mPacketsRemaining = PacketCount;
-    mAddress.setAddress(mHost);
 
-    // If the address is invalid, it's probably a hostname - look it up
-    // Otherwise, jump immediately to the timeout slot
-    if(mAddress.isNull()) {
-        mHostLookup = QHostInfo::lookupHost(mHost, this, SLOT(onLookupHost(QHostInfo)));
-    } else {
+    // If this packet is to be sent locally, then don't bother doing anything
+    // with the address, since we are using local addresses anyway
+    if(mLocal) {
+
         onTimeout();
+
+    } else {
+
+        mAddress.setAddress(mHost);
+
+        // If the address is invalid, it's probably a hostname - look it up
+        // Otherwise, jump immediately to the timeout slot
+        if(mAddress.isNull()) {
+            mHostLookup = QHostInfo::lookupHost(mHost, this, SLOT(onLookupHost(QHostInfo)));
+        } else {
+            onTimeout();
+        }
     }
 }
 
@@ -114,12 +125,13 @@ QJsonObject Device::toJson()
 
 void Device::onLookupHost(const QHostInfo &info)
 {
+    mHostLookup = -1;
+
     // Check to ensure that there was no error performing the lookup
     if(info.error() == QHostInfo::NoError) {
 
         // Grab the first address and jump to the timeout slot
         mAddress = info.addresses().first();
-        mHostLookup = -1;
         onTimeout();
 
     } else {
@@ -134,23 +146,42 @@ void Device::onTimeout()
 {
     QByteArray packet = buildPacket();
 
-    // Write the packet to the socket
-    if(mSocket.writeDatagram(packet, mAddress, mPort) == -1) {
+    if(mLocal) {
 
-        emit error(mSocket.errorString());
-        emit finished();
+        // For local broadcasts, enumerate all network interfaces and send the
+        // packet on all of the ones that have a valid broadcast address
+        foreach(QNetworkInterface interface, QNetworkInterface::allInterfaces()) {
+            if(interface.flags() & QNetworkInterface::CanBroadcast) {
+                foreach(QNetworkAddressEntry entry, interface.addressEntries()) {
+                    if(!entry.broadcast().isNull()) {
+
+                        // TODO: failure is ignored here
+                        mSocket.writeDatagram(packet, entry.broadcast(), mPort);
+                    }
+                }
+            }
+        }
 
     } else {
 
-        // Decrement the number of remaining packets
-        --mPacketsRemaining;
+        // Write the packet to the socket
+        if(mSocket.writeDatagram(packet, mAddress, mPort) == -1) {
 
-        // Check to see if the last packet was sent
-        if(mPacketsRemaining) {
-            mTimer.start();
-        } else {
+            emit error(mSocket.errorString());
             emit finished();
+            return;
+
         }
+    }
+
+    // Decrement the number of remaining packets
+    --mPacketsRemaining;
+
+    // Check to see if the last packet was sent
+    if(mPacketsRemaining) {
+        mTimer.start();
+    } else {
+        emit finished();
     }
 }
 
