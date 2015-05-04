@@ -26,10 +26,11 @@
 #include <QtQml/QQmlContext>
 
 #include "backend.h"
-#include "udpsocket.h"
+#include "devicemodel.h"
 
 void BackendPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("WakeIt"));
-    qmlRegisterType<UdpSocket>(uri, 1, 0, "UdpSocket");
+
+    qmlRegisterType<DeviceModel>(uri, 1, 0, "DeviceModel");
 }

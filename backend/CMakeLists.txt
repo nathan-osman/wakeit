@@ -7,7 +7,7 @@ set(MODULE_NAME "WakeIt")
 set(
     SRC
     src/backend.cpp
-    src/udpsocket.cpp
+    src/device.cpp
 )
 
 # Create the plugin and set its properties
