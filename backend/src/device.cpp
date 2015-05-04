@@ -24,21 +24,30 @@
 
 #include "device.h"
 
-// TODO: make this a configurable setting
+// TODO: make these configurable settings
 
 // Number of packets to send and the delay (in MS) between packets
 const int PacketCount = 4;
 const int PacketDelay = 500;
 
 Device::Device()
+    : mHostLookup(-1)
 {
     // Prepare the timer
+    connect(&mTimer, SIGNAL(timeout()), this, SLOT(onTimeout()));
+
     mTimer.setInterval(PacketDelay);
     mTimer.setSingleShot(true);
 }
 
 void Device::wake()
 {
+    // If we're busy, ignore the request
+    if(isBusy()) {
+        qWarning("Device is busy");
+        return;
+    }
+
     // Reset the number of packets remaining to be sent
     // and set the address that will be used for the packets
     mPacketsRemaining = PacketCount;
@@ -47,7 +56,7 @@ void Device::wake()
     // If the address is invalid, it's probably a hostname - look it up
     // Otherwise, jump immediately to the timeout slot
     if(mAddress.isNull()) {
-        QHostInfo::lookupHost(mHost, this, SLOT(onLookupHost(QHostInfo)));
+        mHostLookup = QHostInfo::lookupHost(mHost, this, SLOT(onLookupHost(QHostInfo)));
     } else {
         onTimeout();
     }
@@ -55,7 +64,17 @@ void Device::wake()
 
 void Device::cancel()
 {
-    mTimer.stop();
+    if(isBusy()) {
+
+        // We are either waiting for a lookup or timer
+        if(mHostLookup != -1) {
+            QHostInfo::abortHostLookup(mHostLookup);
+        } else {
+            mTimer.stop();
+        }
+
+        emit finished();
+    }
 }
 
 bool Device::fromJson(const QJsonObject &object)
@@ -100,10 +119,14 @@ void Device::onLookupHost(const QHostInfo &info)
 
         // Grab the first address and jump to the timeout slot
         mAddress = info.addresses().first();
+        mHostLookup = -1;
         onTimeout();
 
     } else {
+
+        // Emit the error and indicate that the wake process finished
         emit error(info.errorString());
+        emit finished();
     }
 }
 
@@ -113,7 +136,10 @@ void Device::onTimeout()
 
     // Write the packet to the socket
     if(mSocket.writeDatagram(packet, mAddress, mPort) == -1) {
+
         emit error(mSocket.errorString());
+        emit finished();
+
     } else {
 
         // Decrement the number of remaining packets
@@ -123,7 +149,7 @@ void Device::onTimeout()
         if(mPacketsRemaining) {
             mTimer.start();
         } else {
-            emit completed();
+            emit finished();
         }
     }
 }

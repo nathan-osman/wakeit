@@ -43,6 +43,14 @@ public:
 
     Device();
 
+    QString title() const { return mTitle; }
+    bool local() const { return mLocal; }
+    QString host() const { return mHost; }
+    QString mac() const { return mMac; }
+    quint16 port() const { return mPort; }
+
+    bool isBusy() const { return mHostLookup != -1 || mTimer.isActive(); }
+
     void wake();
     void cancel();
 
@@ -52,7 +60,7 @@ public:
 signals:
 
     void error(const QString &message);
-    void completed();
+    void finished();
 
 private slots:
 
@@ -71,6 +79,7 @@ private:
 
     QUdpSocket mSocket;
     QHostAddress mAddress;
+    int mHostLookup;
 
     QTimer mTimer;
     int mPacketsRemaining;
