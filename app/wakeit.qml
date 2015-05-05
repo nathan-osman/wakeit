@@ -23,7 +23,29 @@ MainView {
     }
 
     Component.onCompleted: {
-        deviceModel.load();
+        //======================================
+        // Eventually remove this code
+        // It exists for backwards compatibility
+        //======================================
+        var db = LocalStorage.openDatabaseSync('WakeIt', '1.0', 'Wake It! Database', 10, function(db) {
+            // If the database doesn't exist, do nothing
+        });
+        db.transaction(function(tx) {
+            var rs = tx.executeSql('SELECT host, mac FROM Device ORDER BY host');
+            for(var i = 0; i < rs.rows.length; ++i) {
+                deviceModel.add({
+                    title: "Untitled",
+                    local: false,
+                    host: rs.rows.item(i).host,
+                    mac: rs.rows.item(i).mac,
+                    port: 9
+                });
+            }
+            tx.executeSql('DELETE FROM Device');
+        });
+        //======================================
+
+        //deviceModel.load();
     }
 
     Component {
