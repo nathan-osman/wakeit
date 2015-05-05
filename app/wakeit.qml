@@ -23,6 +23,8 @@ MainView {
     }
 
     Component.onCompleted: {
+        deviceModel.load();
+
         //======================================
         // Eventually remove this code
         // It exists for backwards compatibility
@@ -41,11 +43,10 @@ MainView {
                     port: 9
                 });
             }
+            deviceModel.save();
             tx.executeSql('DELETE FROM Device');
         });
         //======================================
-
-        //deviceModel.load();
     }
 
     Component {
