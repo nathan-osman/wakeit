@@ -4,8 +4,10 @@ cmake_minimum_required(VERSION 2.8.9)
 # Do not remove this line, its required for the correct functionality of the Ubuntu-SDK
 set(UBUNTU_MANIFEST_PATH "manifest.json.in" CACHE INTERNAL "Tells QtCreator location and name of the manifest file")
 
-set(CMAKE_INSTALL_PREFIX /)
+set(CMAKE_INSTALL_PREFIX "/")
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+set(DATA_DIR "/")
 
 # Project definitions
 set(APP_NAME "wakeit")
@@ -20,11 +22,8 @@ set(APP_VERSION "${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}"
 set(APP_ICON "graphics/${APP_NAME}.png")
 set(APP_DESKTOP "${APP_NAME}.desktop")
 
-set(APP_DIR "share/qml/${APP_NAME}")
 set(APP_QML "${APP_NAME}.qml")
-set(APP_EXEC "qmlscene $@ ${APP_DIR}/${APP_QML}")
-
-set(DATA_DIR "/")
+set(APP_EXEC "qmlscene $@ ${APP_QML}")
 
 # Determine the name and arch triplet of the host
 execute_process(

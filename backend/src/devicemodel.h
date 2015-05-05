@@ -124,6 +124,8 @@ private slots:
 
 private:
 
+    QString dataFilename() const;
+
     QList<Device*> mDevices;
 };
 

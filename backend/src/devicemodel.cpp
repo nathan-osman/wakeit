@@ -22,11 +22,13 @@
  * IN THE SOFTWARE.
  */
 
+#include <QDir>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QProcessEnvironment>
 
 #include "devicemodel.h"
 
@@ -87,7 +89,7 @@ QHash<int, QByteArray> DeviceModel::roleNames() const
 
 bool DeviceModel::load()
 {
-    QFile dataFile("data.json");
+    QFile dataFile(dataFilename());
 
     // First check to see if the file even exists
     // If not, this is the first run, so return true
@@ -123,7 +125,7 @@ bool DeviceModel::load()
 
 bool DeviceModel::save()
 {
-    QFile dataFile("data.json");
+    QFile dataFile(dataFilename());
 
     // Attempt to open the file
     if(!dataFile.open(QIODevice::WriteOnly)) {
@@ -142,6 +144,8 @@ bool DeviceModel::save()
 
     // Write the JSON document to disk
     dataFile.write(QJsonDocument(root).toJson());
+
+    return true;
 }
 
 void DeviceModel::add(const QJsonObject &data)
@@ -179,4 +183,14 @@ void DeviceModel::onFinished()
     int i = mDevices.indexOf(device);
 
     emit dataChanged(index(i), index(i), QVector<int>() << Busy);
+}
+
+QString DeviceModel::dataFilename() const
+{
+    QDir storageDirectory = QProcessEnvironment::systemEnvironment().value("XDG_DATA_HOME");
+    if(!storageDirectory.cd("wakeit.nathan-osman")) {
+        return QString();
+    }
+
+    return storageDirectory.absoluteFilePath("data.json");
 }

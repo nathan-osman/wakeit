@@ -1,8 +1,10 @@
 import QtQuick 2.0
 import QtQuick.LocalStorage 2.0
+
 import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
 import Ubuntu.Components.Popups 1.0
+
 import WakeIt 1.0
 
 MainView {
