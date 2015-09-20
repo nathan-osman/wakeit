@@ -103,6 +103,13 @@ public:
     Q_INVOKABLE void add(const QJsonObject &data);
 
     /**
+      * @brief Update an existing device of the model.
+      * @param idx device index
+      * @param data JSON data with new values.
+      */
+    Q_INVOKABLE void update(int idx, const QJsonObject &data);
+
+    /**
      * @brief Remove a device from the model
      * @param index device index
      */
@@ -113,6 +120,13 @@ public:
      * @param index device index
      */
     Q_INVOKABLE void wake(int index);
+
+    // getters
+    Q_INVOKABLE QString title(int index);
+    Q_INVOKABLE bool local(int index);
+    Q_INVOKABLE QString host(int index);
+    Q_INVOKABLE QString mac(int index);
+    Q_INVOKABLE QString port(int index);
 
 signals:
 

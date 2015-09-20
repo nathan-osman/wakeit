@@ -65,6 +65,15 @@ MainView {
                 deviceModel.remove(index);
                 deviceModel.save();
             }
+            onPressAndHold: {
+                editDialog.deviceTitle = deviceModel.title(index)
+                editDialog.deviceLocal = deviceModel.local(index)
+                editDialog.deviceHost = deviceModel.host(index)
+                editDialog.deviceMac = deviceModel.mac(index)
+                editDialog.devicePort = deviceModel.port(index)
+                editDialog.index = index
+                editDialog.show()
+            }
 
             Image {
                 id: deviceImage
@@ -137,79 +146,48 @@ MainView {
         }
     }
 
-    Dialog {
+    ModifyDialog {
+        id: editDialog
+        title: i18n.tr("Edit Device")
+        ackText: i18n.tr("Apply")
+
+        onAcknowledged: {
+            // update device and save the list
+            deviceModel.update(index, {
+               title: deviceTitle,
+               local: deviceLocal,
+               host: deviceHost,
+               mac: deviceMac,
+               port: devicePort
+            });
+            deviceModel.save()
+            editDialog.hide()
+        }
+    }
+
+    ModifyDialog {
         id: addDialog
         title: i18n.tr("Add Device")
+        ackText: i18n.tr("Add")
 
-        TextField {
-            id: deviceTitle
-            placeholderText: i18n.tr("Descriptive title")
-        }
+        onAcknowledged: {
+            // Add the device and save the list
+            deviceModel.add({
+                title: deviceTitle,
+                local: deviceLocal,
+                host: deviceHost,
+                mac: deviceMac,
+                port: devicePort
+            });
+            deviceModel.save();
 
-        Row {
-            spacing: units.gu(1)
-
-            CheckBox {
-                id: deviceLocal
-                checked: true
-            }
-
-            Label {
-                text: i18n.tr("Send as broadcast packet\n(disable for WAN)")
-            }
-        }
-
-        TextField {
-            id: deviceHost
-            inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText
-            placeholderText: i18n.tr("Hostname or IP address")
-            visible: !deviceLocal.checked
-        }
-
-        TextField {
-            id: deviceMac
-            inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText
-            placeholderText: i18n.tr("MAC address")
-        }
-
-        TextField {
-            id: devicePort
-            inputMethodHints: Qt.ImhDigitsOnly
-            placeholderText: i18n.tr("Port (typically 9)")
-        }
-
-        Row {
-            spacing: units.gu(1)
-
-            Button {
-                color: UbuntuColors.orange
-                text: i18n.tr("Add")
-                onClicked: {
-
-                    // Add the device and save the list
-                    deviceModel.add({
-                        title: deviceTitle.text,
-                        local: deviceLocal.checked,
-                        host: deviceHost.text,
-                        mac: deviceMac.text,
-                        port: devicePort.text
-                    });
-                    deviceModel.save();
-
-                    // Hide the dialog and reset the inputs
-                    addDialog.hide();
-                    deviceTitle.text = "";
-                    deviceLocal.checked = true;
-                    deviceHost.text = "";
-                    deviceMac.text = "";
-                    devicePort.text = "";
-                }
-            }
-
-            Button {
-                text: i18n.tr("Cancel")
-                onClicked: addDialog.hide()
-            }
+            // Hide the dialog and reset the inputs
+            addDialog.hide();
+            deviceTitle = "";
+            deviceLocal = true;
+            deviceHost = "";
+            deviceMac = "";
+            devicePort = "";
         }
     }
 
