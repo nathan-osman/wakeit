@@ -161,6 +161,14 @@ void DeviceModel::add(const QJsonObject &data)
     endInsertRows();
 }
 
+void DeviceModel::update(int idx, const QJsonObject &data)
+{
+    Device *device = mDevices.at(idx);
+    device->fromJson(data);
+
+    emit dataChanged(index(idx), index(idx));
+}
+
 void DeviceModel::remove(int index)
 {
     beginRemoveRows(QModelIndex(), index, index);
@@ -174,6 +182,31 @@ void DeviceModel::wake(int i)
     mDevices.at(i)->wake();
 
     emit dataChanged(index(i), index(i), QVector<int>() << Busy);
+}
+
+QString DeviceModel::title(int index)
+{
+    return mDevices.at(index)->title();
+}
+
+bool DeviceModel::local(int index)
+{
+    return mDevices.at(index)->local();
+}
+
+QString DeviceModel::host(int index)
+{
+    return mDevices.at(index)->host();
+}
+
+QString DeviceModel::mac(int index)
+{
+    return mDevices.at(index)->mac();
+}
+
+QString DeviceModel::port(int index)
+{
+    return QString::number(mDevices.at(index)->port());
 }
 
 void DeviceModel::onFinished()
