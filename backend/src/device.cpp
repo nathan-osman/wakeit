@@ -105,7 +105,7 @@ bool Device::fromJson(const QJsonObject &object)
     mLocal = object.value("local").toBool();
     mHost = object.value("host").toString();
     mMac = object.value("mac").toString();
-    mPort = object.value("port").toInt();
+    mPort = object.value("port").toString().toUInt(); // QJsonObject.toInt() always return the default value
 
     return true;
 }
