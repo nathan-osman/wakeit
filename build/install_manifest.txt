@@ -1,0 +1,10 @@
+//manifest.json
+//graphics/device.svg
+//graphics/wakeit.png
+//graphics/toolbarIcon@8.png
+//wakeit.apparmor
+//wakeit.desktop
+/share/qml/wakeit/ModifyDialog.qml
+/share/qml/wakeit/wakeit.qml
+/WakeIt/libWakeItBackend.so
+/WakeIt/qmldir

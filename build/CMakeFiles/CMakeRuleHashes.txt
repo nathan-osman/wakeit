@@ -1,0 +1,8 @@
+# Hashes of file build rules.
+b4821b850e2e5e4cc5b90abd0522b81f CMakeFiles/autopilot
+bee22f4721aa022e86c80b2bede938f8 CMakeFiles/check
+619ee414f0610434b77f64c83f660a83 CMakeFiles/run
+1185e5e2a899695fc451cdbd80004f74 backend/CMakeFiles/WakeItBackend-qmldir
+18c0899a8963908e1b3b41e449299388 backend/CMakeFiles/WakeItBackend_automoc
+dd5f3f067396bda5344c0a6cc6ace534 po/CMakeFiles/wakeit.desktop
+e6a8d7291138cf54dfa1cfe09db10d85 po/CMakeFiles/wakeit.pot

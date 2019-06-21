@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=wakeit
+Comment=Send Wake-on-LAN magic packets
+Exec=qmlscene $@ share/qml/wakeit/wakeit.qml
+Icon=graphics/wakeit.png
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
+X-Ubuntu-Splash-Color=#42A1DD
+X-Ubuntu-Splash-Title=Wake It!
+X-Ubuntu-Splash-Show-Header=true
+X-Ubuntu-Splash-Image=graphics/wakeit.png

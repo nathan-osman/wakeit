@@ -1,4 +1,4 @@
-import QtQuick 2.9
+import QtQuick 2.0
 import QtQuick.LocalStorage 2.0
 
 import Ubuntu.Components 1.3
@@ -25,30 +25,7 @@ MainView {
     Component.onCompleted: {
         deviceModel.load();
 
-        //======================================
-        // Eventually remove this code
-        // It exists for backwards compatibility
-        //======================================
-        var db = LocalStorage.openDatabaseSync('WakeIt', '1.0', 'Wake It! Database', 10, function(db) {
-            db.changeVersion('', '1.0');
-        });
-        db.transaction(function(tx) {
-            if (tx.executeSql('SELECT name FROM sqlite_master WHERE type="table" AND name="Device"').rows.length) {
-                var rs = tx.executeSql('SELECT host, mac FROM Device ORDER BY host');
-                for(var i = 0; i < rs.rows.length; ++i) {
-                    deviceModel.add({
-                        title: "Untitled",
-                        local: false,
-                        host: rs.rows.item(i).host,
-                        mac: rs.rows.item(i).mac,
-                        port: 9
-                    });
-                }
-                deviceModel.save();
-                tx.executeSql('DELETE FROM Device');
-            }
-        });
-        //======================================
+  
     }
 
     Component {

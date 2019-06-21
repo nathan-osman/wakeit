@@ -6,3 +6,7 @@ Icon=@APP_ICON@
 Terminal=false
 Type=Application
 X-Ubuntu-Touch=true
+X-Ubuntu-Splash-Color=#42A1DD
+_X-Ubuntu-Splash-Title=Wake It!
+X-Ubuntu-Splash-Show-Header=true
+X-Ubuntu-Splash-Image=@APP_ICON@
