@@ -1,0 +1,86 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the  package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-21 01:21+0000\n"
+"PO-Revision-Date: 2019-06-30 22:41+0000\n"
+"Last-Translator: Anne017 <anneonyme017@openmailbox.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../app/ModifyDialog.qml:19
+msgid "Descriptive title"
+msgstr "Titre descriptif"
+
+#: ../app/ModifyDialog.qml:31
+msgid ""
+"Send as broadcast packet\n"
+"(disable for WAN)"
+msgstr ""
+"Envoyer comme un paquet de diffusion\n"
+"(désactive pour un réseau étendu)"
+
+#: ../app/ModifyDialog.qml:38
+msgid "Hostname or IP address"
+msgstr "Nom d'hôte ou adresse IP"
+
+#: ../app/ModifyDialog.qml:45
+msgid "MAC address"
+msgstr "Adresse MAC"
+
+#: ../app/ModifyDialog.qml:51
+msgid "Port (typically 9)"
+msgstr "Port (typiquement 9)"
+
+#: ../app/ModifyDialog.qml:57
+msgid "Cancel"
+msgstr "Annuler"
+
+#: ../app/wakeit.qml:107
+msgid "Wake"
+msgstr "Réveiller"
+
+#: ../app/wakeit.qml:129
+msgid "Edit Device"
+msgstr "Modifier l'appareil"
+
+#: ../app/wakeit.qml:130
+msgid "Apply"
+msgstr "Appliquer"
+
+#: ../app/wakeit.qml:148
+msgid "Add Device"
+msgstr "Ajouter un appareil"
+
+#: ../app/wakeit.qml:149 ../app/wakeit.qml:202
+msgid "Add"
+msgstr "Ajouter"
+
+#: ../app/wakeit.qml:175
+msgid "Error"
+msgstr "Erreur"
+
+#: ../app/wakeit.qml:182
+msgid "Close"
+msgstr "Fermer"
+
+#: ../app/wakeit.qml:188 ../app/wakeit.qml:192
+#: /home/mateo/wakeit/build/po/wakeit.desktop.in.h:2
+msgid "Wake It!"
+msgstr "Réveille-le !"
+
+#: ../app/wakeit.qml:219
+msgid "Use the toolbar to add a device"
+msgstr "Utilisez la barre d'outil pour ajouter un appareil"
+
+#: /home/mateo/wakeit/build/po/wakeit.desktop.in.h:1
+msgid "wakeit"
+msgstr "Réveille-le"
