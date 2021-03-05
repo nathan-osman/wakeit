@@ -2,14 +2,14 @@ import QtQuick 2.9
 import QtQuick.LocalStorage 2.0
 
 import Ubuntu.Components 1.3
-import Ubuntu.Components.ListItems 1.3 as ListItem
+//import Ubuntu.Components.ListItems 1.3 as ListItem
 import Ubuntu.Components.Popups 1.3
 
 import WakeIt 1.0
 
 MainView {
     objectName: "mainView"
-    applicationName: "wakeit.nathan-osman"
+    applicationName: "wakeit.mateo-salta"
     automaticOrientation: true
     width: units.gu(40)
     height: units.gu(60)
@@ -29,7 +29,7 @@ MainView {
         // Eventually remove this code
         // It exists for backwards compatibility
         //======================================
-        var db = LocalStorage.openDatabaseSync('WakeIt', '1.0', 'Wake It! Database', 10, function(db) {
+        var db = LocalStorage.openDatabaseSync('WakeIt', '1.0', 'Wake It! Database', 10000, function(db) {
             db.changeVersion('', '1.0');
         });
         db.transaction(function(tx) {
@@ -54,15 +54,25 @@ MainView {
     Component {
         id: deviceDelegate
 
-        ListItem.Empty {
+        ListItem {
             id: grid
-            confirmRemoval: true
-            removable: true
+          //  confirmRemoval: true
+            //removable: true
             width: parent.width
-            onItemRemoved: {
+                        leadingActions: ListItemActions {
+actions: [
+Action {
+            objectName: "selectionModeDeleteAction"
+                    enabled: threadList.selectedItems.count > 0
+                    iconName: "delete"
+                    onTriggered: {
                 deviceModel.remove(index);
                 deviceModel.save();
+                listItem.destroy()
             }
+}]}
+
+         
             onPressAndHold: {
                 editDialog.deviceTitle = deviceModel.title(index)
                 editDialog.deviceLocal = deviceModel.local(index)

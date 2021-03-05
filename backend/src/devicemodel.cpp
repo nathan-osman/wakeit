@@ -221,7 +221,7 @@ void DeviceModel::onFinished()
 QString DeviceModel::dataFilename() const
 {
     QDir storageDirectory = QProcessEnvironment::systemEnvironment().value("XDG_DATA_HOME");
-    if(!storageDirectory.cd("wakeit.nathan-osman")) {
+    if(!storageDirectory.cd("wakeit.mateo-salta")) {
         return QString();
     }
 
